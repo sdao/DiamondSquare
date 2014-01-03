@@ -287,8 +287,8 @@ void DiamondSquare::BuildMesh(TimeValue /*t*/)
 
     int dims = pblock2->GetInt(pb_dims, 0);
     int segs = 0x1 << dims; // 2^dims
-    Grid *grid = new Grid(width, length, segs, segs);
-    grid->Clear();
+    Grid *grid = new Grid(width, length, segs);
+    grid->DiamondSquare(12345, 1.0, 10.0);
 
     int faces_x = grid->GetWidthSegs();
     int faces_y = grid->GetLengthSegs();

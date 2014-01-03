@@ -12,25 +12,26 @@ protected:
     const int _lengthVtex;
     float* _vertices;
 
+    void Grid::Diamond(int u, int v, int radius, float rand);
+    void Grid::Square(int u, int v, int radius, float rand);
+
 public:
     /**
     Creates a new Grid with the vertices uninitialized. Use the Clear() method to zero out all of the vertex heights.
     \param width the width along the U-axis
     \param length the length along the V-axis
-    \param widthSegs the number of faces along the U-axis
-    \param lengthSegs the number of faces along the V-axis
+    \param segs the number of faces along the U and V-axes
     */
-    Grid(float width, float length, int widthSegs, int lengthSegs);
+    Grid(float width, float length, int segs);
 
     /**
     Creates a new Grid with the vertices initialized to the specified array. 
     \param width the width along the U-axis
     \param length the length along the V-axis
-    \param widthSegs the number of faces along the U-axis
-    \param lengthSegs the number of faces along the V-axis
+    \param segs the number of faces along the U and V-axes
     \param vertices the heights of the vertices; this array must be of size (widthSegs + 1) * (lengthSegs + 1)
     */
-    Grid(float width, float length, int widthSegs, int lengthSegs, float* vertexHeights);
+    Grid(float width, float length, int segs, float* vertexHeights);
 
     ~Grid(void);
 
@@ -61,13 +62,26 @@ public:
     */
     float* GetVertexHeights() const;
 
+    /**
+    Sets the height at the given point on the grid.
+    If u or v is out of bounds, it will be wrapped around.
+    */
     void SetVertexHeightWrap(int u, int v, float height);
 
-    float GetVertexHeightWrap(int u, int v);
+    /**
+    Gets the height at the given point on the grid.
+    If u or v is out of bounds, it will be wrapped around.
+    */
+    float GetVertexHeightWrap(int u, int v) const;
 
     /**
     Zeroes out all of the values on the height map.
     */
     void Clear();
+
+    /**
+    Fills the grid up with a diamond-square generated terrain.
+    */
+    void DiamondSquare(unsigned long seed, float rough, float height);
 };
 

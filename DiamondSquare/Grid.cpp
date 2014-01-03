@@ -1,14 +1,16 @@
 #include "Grid.h"
+#include <assert.h>
+#include <cmath>
+#include <random>
 
-
-Grid::Grid(float width, float length, int widthSegs, int lengthSegs)
-    : _width(width), _length(length), _widthSegs(widthSegs), _lengthSegs(lengthSegs), _widthVtex(widthSegs + 1), _lengthVtex(lengthSegs + 1)
+Grid::Grid(float width, float length, int segs)
+    : _width(width), _length(length), _widthSegs(segs), _lengthSegs(segs), _widthVtex(segs + 1), _lengthVtex(segs + 1)
 {
     _vertices = new float[_widthSegs * _lengthSegs];
 }
 
-Grid::Grid(float width, float length, int widthSegs, int lengthSegs, float* vertexHeights)
-    : _width(width), _length(length), _widthSegs(widthSegs), _lengthSegs(lengthSegs), _widthVtex(widthSegs + 1), _lengthVtex(lengthSegs + 1)
+Grid::Grid(float width, float length, int segs, float* vertexHeights)
+    : _width(width), _length(length), _widthSegs(segs), _lengthSegs(segs), _widthVtex(segs + 1), _lengthVtex(segs + 1)
 {
     _vertices = vertexHeights;
 }
@@ -60,16 +62,16 @@ float* Grid::GetVertexHeights() const
 
 void Grid::SetVertexHeightWrap(int u, int v, float height)
 {
-    u = u % _widthSegs;
-    v = v % _lengthSegs;
+    u = (u + _widthSegs) % _widthSegs;
+    v = (v + _lengthSegs) % _lengthSegs;
 
     *(_vertices + u * _lengthSegs + v) = height;
 }
 
-float Grid::GetVertexHeightWrap(int u, int v)
+float Grid::GetVertexHeightWrap(int u, int v) const
 {
-    u = u % _widthSegs;
-    v = v % _lengthSegs;
+    u = (u + _widthSegs) % _widthSegs;
+    v = (v + _lengthSegs) % _lengthSegs;
 
     return *(_vertices + u * _lengthSegs + v);
 }
@@ -80,5 +82,50 @@ void Grid::Clear()
     for (int i = 0; i < total; i++)
     {
         _vertices[i] = 0.0;
+    }
+}
+
+void Grid::Diamond(int u, int v, int r, float rand)
+{
+    float avg = (GetVertexHeightWrap(u - r, v - r)
+        + GetVertexHeightWrap(u - r, v + r)
+        + GetVertexHeightWrap(u + r, v - r)
+        + GetVertexHeightWrap(u + r, v + r)) / 4.0f;
+
+    SetVertexHeightWrap(u, v, avg + rand);
+}
+
+void Grid::Square(int u, int v, int r, float rand)
+{
+    float avg = (GetVertexHeightWrap(u - r, v)
+        + GetVertexHeightWrap(u + r, v)
+        + GetVertexHeightWrap(u, v - r)
+        + GetVertexHeightWrap(u, v + r)) / 4.0f;
+
+    SetVertexHeightWrap(u, v, avg + rand);
+}
+
+void Grid::DiamondSquare(unsigned long seed, float rough, float height)
+{
+    Clear();
+
+    std::tr1::mt19937 engine;
+    engine.seed(seed);
+    float d = height;
+
+    for (int r = _widthSegs / 2; r > 0; r >>= 1) { // Divide radius in half, except 1 >> 1 becomes 0.
+        std::tr1::uniform_real<float> dist(-d, d); // Before each iteration.
+
+        for (int i = 0; i < _widthSegs; i += 2 * r)
+        {
+            for (int j = 0; j < _lengthSegs; j += 2 * r)
+            {
+                Diamond(i + r, j + r, r, dist(engine));
+                Square(i + r, j, r, dist(engine));
+                Square(i, j + r, r, dist(engine));
+            }
+        }
+
+        d *= pow(2.0f, -rough); // After each iteration.
     }
 }
