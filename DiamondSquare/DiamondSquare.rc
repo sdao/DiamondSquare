@@ -34,9 +34,18 @@ BEGIN
     LTEXT           "Length:",IDC_STATIC,7,19,25,8
     CONTROL         "",IDC_LENGTH_EDIT,"CustEdit",WS_TABSTOP,58,19,35,10
     CONTROL         "",IDC_LENGTH_SPIN,"SpinnerControl",0x0,94,19,7,10
-    LTEXT           "Dimensions:",IDC_STATIC,7,31,39,8
+    LTEXT           "Dimensions:",IDC_STATIC,7,32,39,8
     CONTROL         "",IDC_DIM_EDIT,"CustEdit",WS_TABSTOP,58,32,35,10
     CONTROL         "",IDC_DIM_SPIN,"SpinnerControl",0x0,94,32,7,10
+    LTEXT           "Height:",IDC_STATIC,7,45,24,8
+    CONTROL         "",IDC_HEIGHT_EDIT,"CustEdit",WS_TABSTOP,58,45,35,10
+    CONTROL         "",IDC_HEIGHT_SPIN,"SpinnerControl",0x0,94,45,7,10
+    LTEXT           "Roughness:",IDC_STATIC,7,58,39,8
+    CONTROL         "",IDC_ROUGH_EDIT,"CustEdit",WS_TABSTOP,58,58,35,10
+    CONTROL         "",IDC_ROUGH_SPIN,"SpinnerControl",0x0,94,58,7,10
+    LTEXT           "Seed:",IDC_STATIC,7,71,20,8
+    CONTROL         "",IDC_SEED_EDIT,"CustEdit",WS_TABSTOP,58,71,35,10
+    CONTROL         "",IDC_SEED_SPIN,"SpinnerControl",0x0,94,71,7,10
 END
 
 
@@ -99,6 +108,9 @@ BEGIN
     IDS_WIDTH               "Plane width"
     IDS_LENGTH              "Plane length"
     IDS_DIM                 "Simulation dimension"
+    IDS_ROUGH               "Roughness"
+    IDS_SEED                "Seed"
+    IDS_HEIGHT              "Terrain height"
 END
 
 #endif    // English (United States) resources

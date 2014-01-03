@@ -126,6 +126,6 @@ void Grid::DiamondSquare(unsigned long seed, float rough, float height)
             }
         }
 
-        d *= pow(2.0f, -rough); // After each iteration.
+        d *= pow(2.0f, -1.0f + rough); // After each iteration.
     }
 }

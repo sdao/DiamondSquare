@@ -81,6 +81,7 @@ public:
 
     /**
     Fills the grid up with a diamond-square generated terrain.
+    Rough should be on [0.0, 1.0], where 0.0 is the least rough and 1.0 is the most.
     */
     void DiamondSquare(unsigned long seed, float rough, float height);
 };

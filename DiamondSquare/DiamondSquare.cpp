@@ -100,7 +100,10 @@ enum { diamondsquare_params };
 enum { 
     pb_width,
     pb_length,
-    pb_dims
+    pb_dims,
+    pb_seed,
+    pb_height,
+    pb_rough
 };
 
 
@@ -121,10 +124,25 @@ static ParamBlockDesc2 diamondsquare_param_blk ( diamondsquare_params, _T("param
         p_range,	    MIN_LENGTH,1000000.0f,
         p_ui,			TYPE_SPINNER,   EDITTYPE_UNIVERSE,	IDC_LENGTH_EDIT,	    IDC_LENGTH_SPIN,		0.1f,
         p_end,
-    pb_dims,             _T("dimensions"),       TYPE_INT,       0,                  IDS_DIM,
-        p_default,      4,
-        p_range,        2, 12,
+    pb_dims,             _T("dimensions"),       TYPE_INT,       0,                 IDS_DIM,
+        p_default,      6,
+        p_range,        2, 10,
         p_ui,			TYPE_SPINNER,	EDITTYPE_INT,	    IDC_DIM_EDIT,           IDC_DIM_SPIN,           0.05f,
+        p_end,
+    pb_seed,			_T("seed"),			    TYPE_INT,		0,		            IDS_SEED,
+        p_default,		12345,
+        p_range,		1,INT_MAX,
+        p_ui,			TYPE_SPINNER,   EDITTYPE_INT,	    IDC_SEED_EDIT,		    IDC_SEED_SPIN,			0.05f,
+        p_end,
+    pb_height,	        _T("height"),           TYPE_FLOAT, 	P_ANIMATABLE, 		IDS_HEIGHT, 
+        p_default, 		15.0f, 
+        p_range, 		0.01f,100000.00f, 
+        p_ui, 			TYPE_SPINNER,	EDITTYPE_UNIVERSE,  IDC_HEIGHT_EDIT,	    IDC_HEIGHT_SPIN,		0.01f, 
+        p_end,
+    pb_rough,           _T("roughness"),        TYPE_FLOAT,     0,                  IDS_ROUGH,
+        p_default,      0.00f,
+        p_range,        0.00f, 1.00f,
+        p_ui,           TYPE_SPINNER,   EDITTYPE_FLOAT,     IDC_ROUGH_EDIT,         IDC_ROUGH_SPIN,         0.01f,
         p_end,
     p_end
     );
@@ -275,11 +293,6 @@ static void SetWrap(float* arr, int len, int width, int i, int j, float val)
 //From SimpleObject
 void DiamondSquare::BuildMesh(TimeValue /*t*/)
 {
-    //TODO: Implement the code to build the mesh representation of the object
-    //      using its parameter settings at the time passed. The plug-in should 
-    //      use the data member mesh to store the built mesh.
-    //      SimpleObject ivalid member should be updated. This can be done while
-    //      retrieving values from pblock2.
     ivalid = FOREVER;
 
     float width = pblock2->GetFloat(pb_width, 0);
@@ -288,7 +301,7 @@ void DiamondSquare::BuildMesh(TimeValue /*t*/)
     int dims = pblock2->GetInt(pb_dims, 0);
     int segs = 0x1 << dims; // 2^dims
     Grid *grid = new Grid(width, length, segs);
-    grid->DiamondSquare(12345, 1.0, 10.0);
+    grid->DiamondSquare(pblock2->GetInt(pb_seed, 0), pblock2->GetFloat(pb_rough, 0), pblock2->GetFloat(pb_height, 0));
 
     int faces_x = grid->GetWidthSegs();
     int faces_y = grid->GetLengthSegs();
